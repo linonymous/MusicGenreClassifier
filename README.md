@@ -15,7 +15,7 @@
     - Rock              
     - Metal
     
-    Each audio clip in the data set has a length of 30 seconds, are 22050Hz Mono 16-bit files. The data set. And each audio clip has mp3 as an extension.
+    Each audio clip in the data set has a length of 30 seconds, are 22050Hz Mono 16-bit MPEG files.
     
 - ****Features****
 
