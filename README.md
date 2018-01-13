@@ -17,3 +17,14 @@
     
     Each audio clip in the data set has a length of 30 seconds, are 22050Hz Mono 16-bit files. The data set. And each audio clip has mp3 as an extension.
     
+- ****Features****
+
+    Following features has been used to do this classification : 
+    
+    - Mel Frequency Cepstral Coeficient
+    - Spectral Centroid
+    - Spectral Rolloff
+    - Chroma Frequency
+    - Zero crossing rate
+
+    All of the above Features, together contribute to a feature vector with 28 different features.
