@@ -1,9 +1,10 @@
-from common_imports import *
 from spectral_rolloff import spectral_rolloff
 from mfcc import mfcc
 from spectral_centroid import spectral_centroid
 from chroma_frequencies import chroma
 from zero_crossing_rate import zero_crossing_rate
+import sys
+sys.path.append('/home/mahesh/Mahesh/MusicGenreClassifier/Data Transformation/pymir')
 from pymir import AudioFile
 import numpy as np
 
@@ -23,8 +24,7 @@ def feature_calculator(file_path):
     zcr_res = zero_crossing_rate(fixedFrames)
     return np.append(np.append(np.append(np.append(zcr_res, chroma_res), rolloff_res), centroid_res), mfcc_res)
 
-"""
-if __name__ == "__main__":
-    a = feature_calculator("C:\\Users\\Swapnil.Walke\\Downloads\\genres.tar\\genres_wav\\blues_wav\\blues.00000.wav")
-    print a
-    print a.shape"""
+#if __name__ == "__main__":
+#    a = feature_calculator("/home/mahesh/Mahesh/MusicGenreClassifier/Data Transformation/pymir/audio_files/drum_loop_01.wav")
+#    print a
+#    print a.shape
