@@ -24,7 +24,3 @@ def feature_calculator(file_path):
     zcr_res = zero_crossing_rate(fixedFrames)
     return np.append(np.append(np.append(np.append(zcr_res, chroma_res), rolloff_res), centroid_res), mfcc_res)
 
-#if __name__ == "__main__":
-#    a = feature_calculator("/home/mahesh/Mahesh/MusicGenreClassifier/Data Transformation/pymir/audio_files/drum_loop_01.wav")
-#    print a
-#    print a.shape
