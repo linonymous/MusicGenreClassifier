@@ -28,18 +28,14 @@ def data_cleanup(dataFrame):
         for i in range(0, col-1):
             if row[i] == float("-inf"):
                 genre = row[col - 1]
-                row_num = [x for x in range(len(list(min.index))) if list(min.index)[x] == genre][0]
-                print dataFrame.at[index, i]
-                print min.iloc[row_num, i]
+                row_num = min.index.get_loc(genre)
                 dataFrame.at[index, i] = min.iloc[row_num, i]
-                print "Hello"
     a = dataFrame.groupby([col-1]).mean()
-    b = False
     for index, row in dataFrame.iterrows():
         for i in range(0, col-1):
             if math.isnan(float(row[i])):
                 genre = row[col-1]
-                row_num = [x for x in range(len(list(a.index))) if list(a.index)[x] == genre][0]
+                row_num = min.index.get_loc(genre)
                 dataFrame.at[index, i] = a.iloc[row_num, i]
     return dataFrame
 
@@ -47,9 +43,5 @@ def data_cleanup(dataFrame):
 if __name__ == "__main__":
     music = "C:\Users\Swapnil.Walke\MusicGenreClassifier\Data Transformation\music_features.csv"
     genres = "C:\Users\Swapnil.Walke\MusicGenreClassifier\Data Transformation\music_genres.csv"
-    data_cleanup(read_file(music, genres))
-    # a = range(0,28)
-    # df_music = pd.read_csv(music, names=a)
-    # df_genres = pd.read_csv(genres)
-    # print df_music.head(5)
-    # print df_genres.head(5)
+    df = data_cleanup(read_file(music, genres))
+    df.to_csv("clean_data.csv", encoding='utf-8', index=False)
