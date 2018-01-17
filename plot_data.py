@@ -5,20 +5,27 @@ import pandas
 from pandas.plotting import scatter_matrix
 
 
-def visualize_scatter_plot():
+def visualize_scatter_plot(x_file, y_file, feature1, feature2):
     """
-    Function is used to plot the scatter plot on the features
+    Feature is used to plot the scatter plot of the data
+    :param x_file: path to X feature csv file
+    :param y_file: path to X feature csv file
+    :param feature1: column number targeted to plot
+    :param feature1: column number targeted to plot
     :return:
     """
-    x_data = np.genfromtxt('music_features.csv', delimiter=',')
+    x_data = np.genfromtxt(x_file, delimiter=',')
     y_data = []
-    with open('music_genres.csv', 'r') as csvfile:
+    with open(y_file, 'r') as csvfile:
         plots = csv.reader(csvfile, delimiter=',')
         for row in plots:
             y_data.append(int(row[0]))
 
     y_data = np.array(y_data)
-    x_data1 = x_data[:, 13]
-    x_data2 = x_data[:, 14]
+    x_data1 = x_data[:, feature1]
+    x_data2 = x_data[:, feature2]
     plt.scatter(x_data1, x_data2, c=y_data)
     plt.show()
+
+if __name__ == "__main__":
+    visualize_scatter_plot('music_features.csv','music_genres.csv',13,14)
