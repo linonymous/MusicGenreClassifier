@@ -9,6 +9,7 @@ import random
 import statsmodels.api as sm
 from sklearn.cross_validation import train_test_split
 from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import learning_curve
 
 
 def load_dataset(data_path):
@@ -82,15 +83,40 @@ if __name__ == "__main__":
   cm = metrics.confusion_matrix(Y_test, predictions)
   score = model.score(X_test, Y_test)
   print(score)
-  print(cm)
-  plt.figure(figsize=(9, 9))
-  sns.heatmap(cm, annot=True, fmt=".3f", linewidths=.5, square=True, cmap='Blues_r')
-  plt.ylabel('Actual label')
-  plt.xlabel('Predicted label')
-  plt.plot()
+  # print(cm)
+  # plt.figure(figsize=(9, 9))
+  # sns.heatmap(cm, annot=True, fmt=".3f", linewidths=.5, square=True, cmap='Blues_r')
+  # plt.ylabel('Actual label')
+  # plt.xlabel('Predicted label')
+  # plt.plot()
 
+  b = []
+  for x in X:
+      l = []
+      for i in x:
+          l.append(float(i))
+      b.append(l)
+
+  X = b
+  plt.figure()
+  plt.title("learning_curves")
+  plt.xlabel("training examples")
+  plt.ylabel("Scores")
+  train_sizes, train_scores, test_scores = learning_curve(estimator=model, X=X, y=Y, n_jobs=100)
+  train_scores_mean = np.mean(train_scores, axis=1)
+  train_scores_std = np.std(train_scores, axis=1)
+  test_scores_mean = np.mean(test_scores, axis=1)
+  test_scores_std = np.std(test_scores, axis=1)
+  plt.grid()
+  plt.fill_between(train_sizes, train_scores_mean - train_scores_std, train_scores_mean + train_scores_std, alpha=0.1, color='r')
+  plt.fill_between(train_sizes, test_scores_mean - test_scores_std, test_scores_mean + test_scores_std, alpha=0.1,
+                   color='g')
+  plt.plot(train_sizes, train_scores_mean, 'o-', color='r', label = "training score")
+  plt.plot(train_sizes, test_scores_mean, 'o-', color='g', label="cross validation score")
+  plt.legend(loc='best')
+  plt.show()
   #print(type(Y_train[1]))
-  train_model(X_train, Y_train)
+  #train_model(X_train, Y_train)
   #print("Trainig Accuracy is "+ train_accuracy)
   #cv_accuracy = validate_model(X_cv, Y_cv)
   #print("Cross Validation Accuracy is " + cv_accuracy)
