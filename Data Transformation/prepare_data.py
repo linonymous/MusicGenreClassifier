@@ -1,10 +1,12 @@
+
 import csv
 
 from feature_extractor import feature_calculator
 import os
-import numpy
-x_path = "/home/mahesh/Mahesh/MusicGenreClassifier/music_features.csv"
-y_path = "/home/mahesh/Mahesh/MusicGenreClassifier/music_genres.csv"
+
+x_path = "C:\Users\Swapnil.Walke\MusicGenreClassifier\music_features.csv"
+y_path = "C:\Users\Swapnil.Walke\MusicGenreClassifier\music_genres.csv"
+
 
 def calculate_features(dataset_path):
     """
@@ -15,18 +17,14 @@ def calculate_features(dataset_path):
     features = []
     labels = []
     for root, dirs, files in os.walk(dataset_path):
-        for name in files :
+        for name in files:
             print(os.path.join(root, name))
             print(os.path.basename(root))
-            feature = feature_calculator.feature_calculator(os.path.join(root,name))
+            feature = feature_calculator.feature_calculator(os.path.join(root, name))
             features.append(feature)
-            print(type(os.path.basename(root)))
             labels.append(os.path.basename(root))
-            #
-            # print(type(features))
-            #write_csv(features, os.path.basename(root))
-    print(type(labels))
     write_csv(features, labels, x_path, y_path)
+
 
 def write_csv(features, labels, x_path, y_path):
     """
@@ -46,5 +44,6 @@ def write_csv(features, labels, x_path, y_path):
         for label in labels:
             f.write(label + "\n")
 
+
 if __name__ == "__main__":
-    calculate_features('/home/mahesh/Mahesh/MusicGenreClassifier/Data Transformation/Dataset/')
+    calculate_features('C:\Users\Swapnil.Walke\MusicGenreClassifier\Data Transformation\Dataset')

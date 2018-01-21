@@ -10,7 +10,7 @@ def read_file(path_x, path_y):
     :return: the data frame where the last column is the output classes appended to features
     """
     df_music = pd.read_csv(path_x, names=range(0, 28))
-    df_genres = pd.read_csv(path_y, names=range(28,29))
+    df_genres = pd.read_csv(path_y, names=range(28, 29))
     result = pd.concat([df_music, df_genres], axis=1)
     return result
 
@@ -41,7 +41,7 @@ def data_cleanup(dataFrame):
 
 
 if __name__ == "__main__":
-    music = "C:\Users\Swapnil.Walke\MusicGenreClassifier\Data Transformation\music_features.csv"
-    genres = "C:\Users\Swapnil.Walke\MusicGenreClassifier\Data Transformation\music_genres.csv"
+    music = "C:\Users\Swapnil.Walke\MusicGenreClassifier\music_features.csv"
+    genres = "C:\Users\Swapnil.Walke\MusicGenreClassifier\music_genres.csv"
     df = data_cleanup(read_file(music, genres))
     df.to_csv("clean_data.csv", encoding='utf-8', index=False)
