@@ -36,6 +36,3 @@
     - Logistic regression
     - SVM
 
-    Accuracy of datset being classified is quiet low, for 10 classes, and increases with reduction in  number of classes
-    for prediction. Analyzing different curves to understand what would increase accuracy. First suspicion is low number of
-    dataset examples.
