@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 from sklearn import metrics
 import numpy as np
 import random
+import sklearn.metrics as sm
 import seaborn as sns
 from sklearn.cross_validation import train_test_split
 from sklearn.linear_model.logistic import LogisticRegression
@@ -25,8 +26,8 @@ def split_data(X, Y):
     :param Y: Label Matrix
     :return: returns training features, training labels, testing features, testing labels
     """
-    X_train, X_test = train_test_split(X, test_size=0.3)
-    Y_train, Y_test = train_test_split(Y, test_size=0.3)
+    X_train, X_test = train_test_split(X, test_size=0.1)
+    Y_train, Y_test = train_test_split(Y, test_size=0.1)
     return X_train, Y_train, X_test, Y_test
 
 
@@ -50,9 +51,12 @@ def extract_data(data_set):
     Y[Y == "rock"] = 7
     Y[Y == "count"] = 8
     Y[Y == "metal"] = 9
+    print(len(X[1]))
     return X, Y
 
-
+'''
+Best found for classes 1,2,3,4,5,7 --> 29.30% 
+'''
 def train_model(X_train, Y_train):
     """
     Train the model on ,logistic regression
@@ -60,9 +64,9 @@ def train_model(X_train, Y_train):
     :param Y_train: Training target class
     :return: returns trained model
     """
-    model = LogisticRegression(fit_intercept=False, solver="lbfgs")
-    mdl = model.fit(X_train, Y_train)
-    return model
+    modl = LogisticRegression(fit_intercept=True, solver='lbfgs')
+    mdl = modl.fit(X_train, Y_train)
+    return mdl
 
 
 def test_model(model, X_test, Y_test):
@@ -81,7 +85,7 @@ def test_model(model, X_test, Y_test):
         b.append(l)
     X_test = b
     predictions = model.predict(X_test)
-    score = model.score(X_test, Y_test)
+    score = sm.accuracy_score(Y_test, predictions)
     return score
 
 
@@ -105,7 +109,7 @@ def print_training_curves(model, X, Y):
     plt.title("learning_curves")
     plt.xlabel("training examples")
     plt.ylabel("Scores")
-    train_sizes, train_scores, test_scores = learning_curve(estimator=model, X=X, y=Y, n_jobs=100)
+    train_sizes, train_scores, test_scores = learning_curve(estimator=model, X=X, y=Y,shuffle=True, n_jobs=100, cv=4)
     train_scores_mean = np.mean(train_scores, axis=1)
     train_scores_std = np.std(train_scores, axis=1)
     test_scores_mean = np.mean(test_scores, axis=1)
@@ -159,10 +163,9 @@ def print_confusion_matrix(model, X_test, Y_test):
 
 
 if __name__ == "__main__":
-    data_set = load_dataset('/home/mahesh/Mahesh/MusicGenreClassifier/Data Transformation/Data Cleanup/clean_data.csv')
+    data_set = load_dataset('/home/mahesh/Mahesh/MusicGenreClassifier/clean_data.csv')
     X, Y = extract_data(data_set)
     X_train, Y_train, X_test, Y_test = split_data(X, Y)
     model = train_model(X_train, Y_train)
-    print(test_model(model, X_test, Y_test))
+    print(test_model(model, X, Y))
     print_training_curves(model, X, Y)
-    print_confusion_matrix(model, X_test, Y_test)
