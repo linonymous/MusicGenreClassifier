@@ -44,4 +44,4 @@ if __name__ == "__main__":
     music = "C:\Users\Swapnil.Walke\MusicGenreClassifier\music_features.csv"
     genres = "C:\Users\Swapnil.Walke\MusicGenreClassifier\music_genres.csv"
     df = data_cleanup(read_file(music, genres))
-    df.to_csv("clean_data.csv", encoding='utf-8', index=False)
+    df.to_csv("/home/mahesh/Mahesh/MusicGenreClassifer/clean_data.csv", encoding='utf-8', index=False)
