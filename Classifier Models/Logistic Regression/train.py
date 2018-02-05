@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 from sklearn import metrics
 import numpy as np
-import random
+import  pandas as pd
 import sklearn.metrics as sm
 import seaborn as sns
 from sklearn.cross_validation import train_test_split
@@ -15,19 +15,17 @@ def load_dataset(data_path):
     :return X dataset and Y dataset
 
     """
-    data = np.genfromtxt(data_path, delimiter=",", dtype="|U5")
-    return data
+    return pd.read_csv(data_path, delimiter=",")
 
 
-def split_data(X, Y):
+def split_data(X, Y, data_set):
     """
     Split the dataset into training and testing dataset
     :param X: Features matrix
     :param Y: Label Matrix
     :return: returns training features, training labels, testing features, testing labels
     """
-    X_train, X_test = train_test_split(X, test_size=0.1)
-    Y_train, Y_test = train_test_split(Y, test_size=0.1)
+    X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.1, random_state=333, stratify=data_set.iloc[:, -1])
     return X_train, Y_train, X_test, Y_test
 
 
@@ -38,25 +36,13 @@ def extract_data(data_set):
     :param data_set: dataset to be extracted
     :return: X and Y datasets
     """
-    data_set = data_set[1:, :]
-    np.random.shuffle(data_set)
-    X, Y = data_set[:, :-1], data_set[:, -1]
-    Y[Y == "blues"] = 0
-    Y[Y == "class"] = 1
-    Y[Y == "hipho"] = 2
-    Y[Y == "regga"] = 3
-    Y[Y == "jazz"] = 4
-    Y[Y == "disco"] = 5
-    Y[Y == "pop"] = 6
-    Y[Y == "rock"] = 7
-    Y[Y == "count"] = 8
-    Y[Y == "metal"] = 9
-    print(len(X[1]))
-    return X, Y
+    return data_set.iloc[:, :-1], data_set.iloc[:, -1:]
+
 
 '''
 Best found for classes 1,2,3,4,5,7 --> 29.30% 
 '''
+
 def train_model(X_train, Y_train):
     """
     Train the model on ,logistic regression
@@ -64,12 +50,12 @@ def train_model(X_train, Y_train):
     :param Y_train: Training target class
     :return: returns trained model
     """
-    modl = LogisticRegression(fit_intercept=True, solver='lbfgs')
-    mdl = modl.fit(X_train, Y_train)
-    return mdl
+    modl = LogisticRegression(class_weight='balanced', multi_class='ovr', penalty='l2')
+    modl.fit(X_train, Y_train)
+    return modl
 
 
-def test_model(model, X_test, Y_test):
+def test_model(model, X_train, Y_train, X_test, Y_test):
     """
     Used to test the model and return testing score
     :param X_test: Testing features
@@ -77,16 +63,11 @@ def test_model(model, X_test, Y_test):
     :param model: Model to test
     :return: returns accuracy score in %
     """
-    b = []
-    for x in X_test:
-        l = []
-        for i in x:
-            l.append(float(i))
-        b.append(l)
-    X_test = b
-    predictions = model.predict(X_test)
-    score = sm.accuracy_score(Y_test, predictions)
-    return score
+    train_pred = model.predict(X_train)
+    test_pred = model.predict(X_test)
+    train_score = sm.f1_score(Y_train, train_pred, average='weighted')
+    test_score = sm.f1_score(Y_test, test_pred, average='weighted')
+    return train_score, test_score
 
 
 def print_training_curves(model, X, Y):
@@ -97,14 +78,6 @@ def print_training_curves(model, X, Y):
     :param Y: Training labels
     :return:
     """
-    b = []
-    for x in X:
-        l = []
-        for i in x:
-            l.append(float(i))
-        b.append(l)
-
-    X = b
     plt.figure()
     plt.title("learning_curves")
     plt.xlabel("training examples")
@@ -163,9 +136,9 @@ def print_confusion_matrix(model, X_test, Y_test):
 
 
 if __name__ == "__main__":
-    data_set = load_dataset('/home/mahesh/Mahesh/MusicGenreClassifier/clean_data.csv')
+    data_set = load_dataset('C:/Users/Mahesh.Bhosale/PycharmProjects/MusicGenreClassifier/MusicGenreClassifier/clean_data.csv')
     X, Y = extract_data(data_set)
-    X_train, Y_train, X_test, Y_test = split_data(X, Y)
+    X_train, Y_train, X_test, Y_test = split_data(X, Y, data_set)
     model = train_model(X_train, Y_train)
-    print(test_model(model, X, Y))
+    print(test_model(model, X_train, Y_train, X_test, Y_test))
     print_training_curves(model, X, Y)
