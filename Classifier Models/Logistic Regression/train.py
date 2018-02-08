@@ -7,7 +7,8 @@ import seaborn as sns
 from sklearn.cross_validation import train_test_split
 from sklearn.linear_model.logistic import LogisticRegression
 from sklearn.model_selection import learning_curve
-
+from sklearn.svm import SVC
+from sklearn.ensemble import RandomForestClassifier
 
 def load_dataset(data_path):
     """
@@ -25,34 +26,39 @@ def split_data(X, Y, data_set):
     :param Y: Label Matrix
     :return: returns training features, training labels, testing features, testing labels
     """
-    X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.1, random_state=333, stratify=data_set.iloc[:, -1])
+    X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.1, random_state=333, stratify=data_set.iloc[:, -1:])
     return X_train, Y_train, X_test, Y_test
 
 
 def extract_data(data_set):
     """
-    Get X and Y dataset from single dataset, assumes last column in dataset is Y and skips first row
-    being features names.
+    Get X and Y dataset from single dataset, assumes last column in dataset is Y.
     :param data_set: dataset to be extracted
-    :return: X and Y datasets
+    :return: X dataset of features and Y dataset of labels
     """
-    return data_set.iloc[:, :-1], data_set.iloc[:, -1:]
+    X = data_set.iloc[:, :-1]
+    Y = data_set.iloc[:, -1:]
+    return X, Y
 
 
 '''
 Best found for classes 1,2,3,4,5,7 --> 29.30% 
 '''
 
-def train_model(X_train, Y_train):
+def train_model(X_train, Y_train, model_type):
     """
     Train the model on ,logistic regression
     :param X_train: Training features
     :param Y_train: Training target class
     :return: returns trained model
     """
-    modl = LogisticRegression(class_weight='balanced', multi_class='ovr', penalty='l2')
-    modl.fit(X_train, Y_train)
-    return modl
+    models = {'logistic-regression' : LogisticRegression(class_weight='balanced', multi_class='ovr', solver='newton-cg', penalty='l2'),
+            'rbf-kernel' : SVC(C=30, kernel='rbf', decision_function_shape='ovr', random_state=333, degree=10, class_weight='balanced'),
+            'poly' : SVC(C=0.5, decision_function_shape='ovr', kernel='poly', degree=5, random_state=333, class_weight='balanced'),
+            'random-forest' : RandomForestClassifier(class_weight='balanced')}
+    model = models[model_type]
+    model.fit(X_train, Y_train)
+    return model
 
 
 def test_model(model, X_train, Y_train, X_test, Y_test):
@@ -82,7 +88,7 @@ def print_training_curves(model, X, Y):
     plt.title("learning_curves")
     plt.xlabel("training examples")
     plt.ylabel("Scores")
-    train_sizes, train_scores, test_scores = learning_curve(estimator=model, X=X, y=Y,shuffle=True, n_jobs=100, cv=4)
+    train_sizes, train_scores, test_scores = learning_curve(estimator=model, X=X, y=Y, shuffle=True, n_jobs=100, cv=4)
     train_scores_mean = np.mean(train_scores, axis=1)
     train_scores_std = np.std(train_scores, axis=1)
     test_scores_mean = np.mean(test_scores, axis=1)
@@ -139,6 +145,7 @@ if __name__ == "__main__":
     data_set = load_dataset('C:/Users/Mahesh.Bhosale/PycharmProjects/MusicGenreClassifier/MusicGenreClassifier/clean_data.csv')
     X, Y = extract_data(data_set)
     X_train, Y_train, X_test, Y_test = split_data(X, Y, data_set)
-    model = train_model(X_train, Y_train)
+    model = train_model(X_train, Y_train, 'logistic-regression')
     print(test_model(model, X_train, Y_train, X_test, Y_test))
     print_training_curves(model, X, Y)
+    print_confusion_matrix(model, X_test, Y_test)
