@@ -1,5 +1,16 @@
 import pandas as pd
 import matplotlib.pyplot as plt
+from sklearn import metrics
+import numpy as np
+import  pandas as pd
+import sklearn.metrics as sm
+import seaborn as sns
+from sklearn.cross_validation import train_test_split
+from sklearn.linear_model.logistic import LogisticRegression
+from sklearn.model_selection import learning_curve
+from sklearn.svm import SVC
+from sklearn.ensemble import RandomForestClassifier
+
 
 def load_dataset(data_path):
     """
