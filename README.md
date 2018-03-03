@@ -35,4 +35,5 @@
 
     - Logistic regression
     - SVM
+    - Neural Network
 
